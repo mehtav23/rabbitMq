@@ -2,22 +2,29 @@ const express = require('express');
 const app = express();
 const appConstants = require('./appConstants');
 const bodyParser = require('body-parser');
-const publisher = require('./direct/publisher');
+const directPublisher = require('./direct/publisher');
+const fanoutPublisher = require('./fanout/publisher');
 const subscriptions = require('./direct/subscriber');
+const fanoutSubscription = require('./fanout/subscriber');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+
 subscriptions();
-// app.use('/', (req,res)=>{
-//     res.send('Hello world');
-//     //publisher(req, res);
+fanoutSubscription();
 
 
-// });
-
-app.use('/publish',(req,res)=>{
+app.use('/publish',(req, res)=>{
     res.send('publishing');
-    publisher(req, res);
+    directPublisher(req, res);
+
+
+});
+
+app.use('/fanout', (req, res)=>{
+    res.send('Fan out ');
+    fanoutPublisher(req, res);
 
 
 });
