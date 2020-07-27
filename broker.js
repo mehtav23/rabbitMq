@@ -19,6 +19,10 @@ const rabbitMqConfig =
                     demo_fanout_exchange: {
                         assert: true,
                         type: 'fanout'
+                    },
+                    demo_topic_exchange: {
+                        assert: true,
+                        type: 'topic'
                     }
                 },
                 queues: {
@@ -31,11 +35,19 @@ const rabbitMqConfig =
                     demo_fan2:{
                         assert: true,
                     },
+                    demo_topic1_queue:{
+                        assert: true,
+                    },
+                    demo_topic2_queue:{
+                        assert: true,
+                    },
                 },
                 bindings: [
                     'demo_exchange[demo_key]-> demo_queue',
                     'demo_fanout_exchange->demo_fan1',
                     'demo_fanout_exchange->demo_fan2',
+                    'demo_topic_exchange[demo_topic.#]->demo_topic1_queue',
+                    'demo_topic_exchange[#.demo_topic.#]->demo_topic2_queue',
 
                 ],
                 subscriptions:{
@@ -44,10 +56,20 @@ const rabbitMqConfig =
                         contentType: 'application/json'
                     },
                     demo_fan1: {
-                        queue: 'demo_fan1'
+                        queue: 'demo_fan1',
+                        contentType: 'application/json'
                     },
                     demo_fan2: {
-                        queue: 'demo_fan2'
+                        queue: 'demo_fan2',
+                        contentType: 'application/json'
+                    },
+                    demo_topic1_sub: {
+                        queue: 'demo_topic1_queue',
+                        contentType: 'application/json'
+                    },
+                    demo_topic2_sub: {
+                        queue: 'demo_topic2_queue',
+                        contentType: 'application/json'
                     }
                 },
                 publications: {
@@ -57,6 +79,10 @@ const rabbitMqConfig =
                     },
                     demo_fan_pub: {
                         exchange: 'demo_fanout_exchange'
+                    },
+                    demo_topic_pub: {
+                        exchange: 'demo_topic_exchange',
+                        routingKey: 'demo_topic.xyz'
                     }
                 }
             }
